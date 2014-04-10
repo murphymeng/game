@@ -1,0 +1,22 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.board {
+    width: 400px;
+    height: 480px;
+    background: url(../res/board.png) no-repeat;
+    position: relative;
+}
+
+.paiku {
+    margin-top: 30px;
+    width: 400px;
+    height: 160px;
+    background: url(../res/paiku.png) no-repeat
+}
+
+.card {
+    position: relative;
+}
