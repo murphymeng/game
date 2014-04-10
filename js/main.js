@@ -1,21 +1,33 @@
 var cards1Config = [{
     id: 1,
     name: 'zhaoyun',
-    img: 'res/zhaoyun.png'
+    type: 'B',
+    img: 'res/zhaoyun.png',
+    ad: 1,
+    hp: 10
 }, {
     id: 2,
     name: 'daqiao',
-    img: 'res/daqiao.png'
+    type: 'B',
+    img: 'res/daqiao.png',
+    ad: 1,
+    hp: 10
 }];
 
 var cards2Config = [{
     id: 3,
     name: 'zhaoyun',
-    img: 'res/zhaoyun.png'
+    type: 'B',
+    img: 'res/zhaoyun.png',
+    ad: 1,
+    hp: 10
 }, {
     id: 4,
     name: 'daqiao',
-    img: 'res/daqiao.png'
+    type: 'B',
+    img: 'res/daqiao.png',
+    ad: 1,
+    hp: 10
 }];
 
 var Fight = Class.extend({
@@ -35,13 +47,17 @@ var Fight = Class.extend({
 
 var Face = Class.extend({
     init: function(config) {
-        $.extend(this, config);
+        var me = this;
+        $.extend(me, config);
+        me.leftHp = me.hp;
+        me.hpLine = $('#' + me.id + " hp_line");
     }
 });
 
 var Player = Class.extend({
     init: function(config) {
-        var me = this;
+        var me = this,
+            me.tmpCards = [];
         $.extend(me, config);
         if (me.cards) {
             $.each(me.cards, function(idx, card) {
@@ -69,14 +85,14 @@ var Player = Class.extend({
 
         $.each(paikuCards, function(idx, card) {
             tmpArray.push(card);
-        })
+        });
 
         $.each(tmpArray, function(idx, card) {
             if (me.leftMoveCount > 0 && paikuCards.length > 0) {
                 card.shangzhen(card.x);
                 me.leftMoveCount--;
             }
-        })
+        });
     },
 
     createPaiku: function(paikuId) {
@@ -100,21 +116,36 @@ var cw = 80,
 
 
 
-function Card(config) {
-    var me = this;
-    me.id = config.id;
-    me.name = config.name;
-    me.img = new Image();
-    me.img.src = config.img;
-    me.img.width = cw;
-    me.img.height = cw;
+var Card = Class.extend({
 
-    me.shangzhen = function(x) {
+    init: function(config) {
+        var me = this;
+        $.extend(me, config);
+        me.img = new Image();
+        me.img.src = config.img;
+        me.img.width = cw;
+        me.img.height = cw;
+    },
 
-        // ay 代表可上阵的Y坐标，默认为本方最贴近中线的y坐标
+    belongTo: function() {
+        if (this.player) {
+            if (this.player.isP1) {
+                return 'p1';
+            } else {
+                return 'p2';
+            }
+        }
+    },
+
+    shangzhen: function(x) {
+
+        var
+            me = this,
+            ay; // ay 代表可上阵的Y坐标，默认为本方最贴近中线的y坐标
+        
     
         if (me.player.isP1) {
-            for (var ay = board.row / 2 - 1; ay >= 0; ay--) {
+            for (ay = board.row / 2 - 1; ay >= 0; ay--) {
                 if (!board.cellObj[x + "" + ay].card) {
                     break;
                 }
@@ -122,7 +153,7 @@ function Card(config) {
                 if (ay === -1) return false;
             }
         } else {
-            for (var ay = board.row / 2; ay < board.row; ay++) {
+            for (ay = board.row / 2; ay < board.row; ay++) {
                 if (!board.cellObj[x + "" + ay].card) {
                     break;
                 }
@@ -149,8 +180,47 @@ function Card(config) {
         me.paiku.cards.splice(me, 1);
         board.cards.push(me);
         me.paiku = null;
-    };
-}
+    },
+
+    reduceHp: function() {
+        var me = this;
+    },
+
+    attackFace: function() {
+        var me = this,
+            face = face2;
+
+        face.leftHp -= me.at;
+        face.hpLine.animate({width: "-=" + me.at});
+    },
+
+    attack: function() {
+        var me = this;
+
+        if (me.type === 'B') {
+            if (me.y !== board.row/2 -1) {
+                return;
+            }
+            if (board.getCellByPos(me.x, me.y + 1).card) {
+                me.attackCard(board.getCellByPos(me.x, me.y + 1).card);
+            } else {
+                me.attachFace();
+            }
+        }
+
+        for (var x = 0; x < board.column; x++) {
+            for (var y = row/2; y < row; y++) {
+                if (Math.abs(me.x - x) + Math.abs(me.y - y) <= me.ad) {
+                    if (board.getCellByPos(x, y).card) {
+                        board.getCellByPos(x, y).card.reduceHp(card.at);
+                        return;
+                    }
+                }
+            }
+        }
+
+    }
+});
 
 function Cell(x, y) {
     var me = this;
@@ -192,7 +262,7 @@ var Paiku = Class.extend({
             card.div = d;
             d.click(function(dd){
                 if (!card.selected) {
-                    d.css({'background':'red'});
+                    d.css({'background':'green'});
                     card.selected = true;
                     me.selectedCard = card;
                 } else {
@@ -280,30 +350,34 @@ $.each(cards2Config, function(idx, cardConfig) {
     cards2.push(new Card(cardConfig));
 });
 
-$(document).ready(function() {
-    var
-        face1 = new Face({
-            'blood': 10
-        }),
-        face2 =new Face({
-            'blood': 10
-        }),
-        play1 = new Player({
-            'cards': cards1,
-            'moveCount': 2,
-            'isP1': true,
-            'face': face1
-        }),
-        play2 = new Player({
-            'cards': cards2,
-            'moveCount': 2,
-            'isP1': false,
-            'face': face2
-        });
+var
+    face1 = new Face({
+        'id': 'face1',
+        'hp': 100
+    }),
+    face2 =new Face({
+        'id': 'face2',
+        'hp': 100
+    }),
+    play1 = new Player({
+        'cards': cards1,
+        'moveCount': 2,
+        'isP1': true,
+        'face': face1
+    }),
+    play2 = new Player({
+        'cards': cards2,
+        'moveCount': 2,
+        'isP1': false,
+        'face': face2
+    });
 
+
+
+$(document).ready(function() {
+    
     play1.createPaiku('paiku1');
     play2.createPaiku('paiku2');
-
     board.init();
 
     currentPlayer = play1;
