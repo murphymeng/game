@@ -33,9 +33,25 @@ var Fight = Class.extend({
     }
 });
 
-var Player = Class.extend({
+var Face = Class.extend({
     init: function(config) {
         $.extend(this, config);
+    }
+});
+
+var Player = Class.extend({
+    init: function(config) {
+        var me = this;
+        $.extend(me, config);
+        if (me.cards) {
+            $.each(me.cards, function(idx, card) {
+                card.player = me;
+            });
+        }
+    },
+
+    resetMoveCount: function() {
+        this.leftMoveCount = this.moveCount;
     },
 
     startRound: function() {
@@ -47,13 +63,34 @@ var Player = Class.extend({
     },
 
     autoDispatch: function() {
-        var me = this;
+        var me = this,
+            paikuCards = me.paiku.cards,
+            tmpArray = [];
+
+        $.each(paikuCards, function(idx, card) {
+            tmpArray.push(card);
+        })
+
+        $.each(tmpArray, function(idx, card) {
+            if (me.leftMoveCount > 0 && paikuCards.length > 0) {
+                card.shangzhen(card.x);
+                me.leftMoveCount--;
+            }
+        })
     },
 
     createPaiku: function(paikuId) {
         if (this.cards) {
             this.paiku = new Paiku(this.cards, paikuId);
         }
+    },
+
+    getSelectedCard: function() {
+        return this.paiku.selectedCard;
+    },
+
+    attack: function() {
+
     }
 });
 
@@ -72,26 +109,46 @@ function Card(config) {
     me.img.width = cw;
     me.img.height = cw;
 
-    me.shangzhen = function(x, y) {
+    me.shangzhen = function(x) {
 
         // ay 代表可上阵的Y坐标，默认为本方最贴近中线的y坐标
-        for (var ay = board.row / 2; ay < board.row; ay++) {
-            if (!board.cellObj[x + "" + ay].card) {
-                break;
-            }
+    
+        if (me.player.isP1) {
+            for (var ay = board.row / 2 - 1; ay >= 0; ay--) {
+                if (!board.cellObj[x + "" + ay].card) {
+                    break;
+                }
 
-            if (ay === board.row) return false;
+                if (ay === -1) return false;
+            }
+        } else {
+            for (var ay = board.row / 2; ay < board.row; ay++) {
+                if (!board.cellObj[x + "" + ay].card) {
+                    break;
+                }
+
+                if (ay === board.row) return false;
+            }
         }
         
+        
         board.div.append(me.div);
-        me.div.css({left: x * cw, top: y * cw});
-        me.div.animate({top: "-=" + (board.row - 1 - ay) * cw});
+
+        if (me.player.isP1) {
+            me.div.css({left: x * cw, top: 0});
+            me.div.animate({top: "+=" + ay * cw});
+        } else {
+            me.div.css({left: x * cw, top: board.row * cw});
+            me.div.animate({top: "-=" + (board.row - 1 - ay) * cw});
+        }
+
         me.div.css({'background':'transparent'});
         me.selected = false;
         me.paiku.selectedCard = null;
         board.cellObj[x + "" + ay].card = me;
         me.paiku.cards.splice(me, 1);
         board.cards.push(me);
+        me.paiku = null;
     };
 }
 
@@ -127,6 +184,7 @@ var Paiku = Class.extend({
 
         $.each(cards, function(idx, card) {
             card.paiku = me;
+            card.x = idx;
             var div = document.createElement('div');
             div.id = 'div-' + card.id;
             me.el.append(div);
@@ -136,11 +194,11 @@ var Paiku = Class.extend({
                 if (!card.selected) {
                     d.css({'background':'red'});
                     card.selected = true;
-                    paiku1.selectedCard = card;
+                    me.selectedCard = card;
                 } else {
                     d.css({'background':'transparent'});
                     card.selected = false;
-                    paiku1.selectedCard = null;
+                    me.selectedCard = null;
                 }
                 
             });
@@ -177,9 +235,8 @@ var board = {
                     x = Math.floor(e.offsetX / me.cw),
                     y = Math.floor(e.offsetY / me.cw);
 
-                if (!cell.card && cell.card.selectedCard && cell.isChuBingDian(x, y)) {
-                    var card = cell.card.selectedCard;
-                    card.shangzhen(x, y);
+                if (!cell.card && currentPlayer.getSelectedCard() && currentPlayer.getSelectedCard().paiku) {
+                    currentPlayer.getSelectedCard().shangzhen(x);
                 }
             }
             
@@ -225,15 +282,32 @@ $.each(cards2Config, function(idx, cardConfig) {
 
 $(document).ready(function() {
     var
+        face1 = new Face({
+            'blood': 10
+        }),
+        face2 =new Face({
+            'blood': 10
+        }),
         play1 = new Player({
-            'cards': cards1
+            'cards': cards1,
+            'moveCount': 2,
+            'isP1': true,
+            'face': face1
         }),
         play2 = new Player({
-            'cards': cards2
+            'cards': cards2,
+            'moveCount': 2,
+            'isP1': false,
+            'face': face2
         });
 
     play1.createPaiku('paiku1');
     play2.createPaiku('paiku2');
 
     board.init();
+
+    currentPlayer = play1;
+    currentPlayer.resetMoveCount();
+    currentPlayer.autoDispatch();
+    currentPlayer.attack();
 });
