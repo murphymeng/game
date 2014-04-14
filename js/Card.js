@@ -21,6 +21,11 @@ Card = Class.extend({
             if (!me.selected) {
                 me.div.css({'background':'green'});
                 me.selected = true;
+
+                if (me.onBoard) {
+                    me.highLightMovableCells();
+                }
+
                 //me.selectedCard = card;
             } else {
                 me.div.css({'background':'transparent'});
@@ -50,6 +55,33 @@ Card = Class.extend({
         me.on('attackDone', function() {
             this.player.autoAttack();
         });
+    },
+
+    highLightMovableCells: function() {
+        var me = this,
+            cells = me.getMovableCells();
+
+        cells.forEach(function(cell) {
+            cell.setColor('green');
+        });
+
+    },
+
+    getMovableCells: function() {
+        var me = this,
+            cells = [];
+        if (me.player === player2) {
+            for (var x = 0; x < board.column; x++) {
+                for (var y = board.row / 2; y < board.row - 1; y++) {
+                    if (!board.cellObj[x + '' + y].card &&
+                        (Math.abs(x - me.x) + Math.abs(y - me.y) <= me.md) &&
+                        y <= me.y) {
+                        cells.push(board.cellObj[x + '' + y]);
+                    }
+                }
+            }
+        }
+        return cells;
     },
 
     on: function(eventType, handler) {
@@ -115,6 +147,7 @@ Card = Class.extend({
         board.cellObj[x + "" + ay].card = me;
         me.paiku.cards.splice(me, 1);
         board.cards.push(me);
+        me.onBoard = true;
         me.paiku = null;
 
         board.div.append(me.div);

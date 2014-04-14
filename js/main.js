@@ -3,6 +3,7 @@ var cards1Config = [{
     name: 'zhaoyun',
     type: 'B',
     img: 'res/zhaoyun.png',
+    md: 1, // 移动距离
     at: 3,
     ad: 1,
     hp: 10
@@ -11,6 +12,7 @@ var cards1Config = [{
     name: 'daqiao',
     type: 'B',
     img: 'res/daqiao.png',
+    md: 1, // 移动距离
     at: 3,
     ad: 1,
     hp: 10
@@ -21,6 +23,7 @@ var cards2Config = [{
     name: 'zhaoyun',
     type: 'B',
     img: 'res/zhaoyun.png',
+    md: 1, // 移动距离
     at: 3,
     ad: 1,
     hp: 10
@@ -29,6 +32,7 @@ var cards2Config = [{
     name: 'daqiao',
     type: 'B',
     img: 'res/daqiao.png',
+    md: 1, // 移动距离
     at: 3,
     ad: 1,
     hp: 10
@@ -55,23 +59,6 @@ var cw = 80,
     cards1 = [],
     cards2 = [];
 
-function Cell(x, y) {
-    var me = this;
-    me.x = x;
-    me.y = y;
-    me.card = null;
-
-    // 是否为出兵点
-    me.isChuBingDian = function(x, y) {
-        if ( y === board.column ) {
-            return true;
-        } else {
-            return false;
-        }
-    };
-}
-
-
 var board = {
     row: 6,
     column: 5,
@@ -86,8 +73,8 @@ var board = {
         me.right = me.left + me.column * cw;
         me.bottom = me.top + cw * me.row;
 
-        for (var i = 0; i < me.row; i++) {
-            for (var j = 0; j < me.column; j++) {
+        for (var i = 0; i < me.column; i++) {
+            for (var j = 0; j < me.row; j++) {
                 me.cellObj[i + "" + j] = new Cell(i, j);
             }
         }
