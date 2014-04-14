@@ -13,8 +13,9 @@ Paiku = Class.extend({
         $.each(cards, function(idx, card) {
             card.paiku = me;
             card.x = idx;
-            me.el.append(card.el);
-            me.el.css({width: cw, height: cw, position: 'absolute', left: idx * cw});
+            me.el.append(card.div);
+            card.div.css({width: cw, height: cw, position: 'absolute', left: idx * cw});
+            card.div.show();
         });
     },
 

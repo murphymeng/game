@@ -141,6 +141,7 @@ $.each(cards1Config, function(idx, cardConfig) {
 $.each(cards2Config, function(idx, cardConfig) {
     cards2.push(new Card(cardConfig));
 });
+
 var
     face1 = new Face({
         'id': 'face1',
@@ -149,8 +150,7 @@ var
     face2 =new Face({
         'id': 'face2',
         'hp': 40
-    });
-    var
+    }),
     player1 = new Player({
         'cards': cards1,
         'moveCount': 2,
@@ -164,11 +164,12 @@ var
         'face': face2
     });
 
+
+
 player1.createPaiku('paiku1');
 player2.createPaiku('paiku2');
 
 $(document).ready(function() {
-    
 
     board.init();
 

@@ -13,7 +13,9 @@ Card = Class.extend({
 
         el = document.createElement('div');
         el.id = 'div-' + me.id;
+        $('body').append(el);
         me.div = $('#' + el.id);
+        me.div.hide();
 
         me.div.click(function() {
             if (!me.selected) {
@@ -22,7 +24,7 @@ Card = Class.extend({
                 //me.selectedCard = card;
             } else {
                 me.div.css({'background':'transparent'});
-                card.selected = false;
+                me.selected = false;
                 //me.selectedCard = null;
             }
         });
