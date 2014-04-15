@@ -176,9 +176,11 @@ Card = Class.extend({
         var me = this;
         face.leftHp -= me.at;
         face.hpLine.animate({width: "-=" + 400 / face.hp * me.at}, function() {
+            face.hpValue.html(face.hpValue.html() - me.at);
             me.status = 2;
             me.fireEvent('attackDone');
         });
+
     },
 
     doAttackEffect: function(callback) {
