@@ -16,16 +16,22 @@ Cell = Class.extend({
             height: cw,
             background: 'transparent'
         });
-        me.dom.on('click', function(){
+        me.dom.on('click', function() {
+
+            if (!me.card && currentPlayer.paiku.getSelectedCard() && me.y === board.row - 1) {
+                currentPlayer.paiku.getSelectedCard().shangzhen(me.x);
+                return;
+            }
+
             if(board.selectedCard && me.isMovable()) {
                 board.selectedCard.moveTo(me.x, me.y);
             }
-        })
+        });
         me.card = null;
     },
 
     isMovable: function() {
-        if (this.dom.css('backgroundColor') === 'green') {
+        if (this.dom.css('backgroundColor') === 'rgb(0, 128, 0)') {
             return true;
         } else {
             return false;

@@ -4,8 +4,8 @@ var cards1Config = [{
     type: 'B',
     img: 'res/zhaoyun.png',
     md: 1, // 移动距离
-    at: 3,
-    ad: 1,
+    at: 3, // 攻击力
+    ad: 1, // 攻击距离
     hp: 10
 }, {
     id: 2,
@@ -23,7 +23,7 @@ var cards2Config = [{
     name: 'zhaoyun',
     type: 'B',
     img: 'res/zhaoyun.png',
-    md: 1, // 移动距离
+    md: 2, // 移动距离
     at: 3,
     ad: 1,
     hp: 10
@@ -78,19 +78,6 @@ var board = {
                 me.cellObj[i + "" + j] = new Cell(i, j);
             }
         }
-
-        me.div.click(function(e) {
-            var me = board;
-            if (me.isInBoard(e.offsetX, e.offsetY)) {
-                var cell = me.getCellByPos(e.offsetX, e.offsetY),
-                    x = Math.floor(e.offsetX / me.cw),
-                    y = Math.floor(e.offsetY / me.cw);
-
-                if (!cell.card && currentPlayer.paiku.getSelectedCard()) {
-                    currentPlayer.paiku.getSelectedCard().shangzhen(x);
-                }
-            }
-        });
     },
 
     isInBoard: function(left, top) {

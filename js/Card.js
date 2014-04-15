@@ -25,18 +25,16 @@ Card = Class.extend({
                 if (me.onBoard) {
                     board.selectedCard = me;
                     me.highLightMovableCells();
+                    if (me.getAttackableCells().length > 0) {
+                        me.getAttackableCells().forEach(function(cell) {
+                            cell.dom.css({background: 'red'});
+                        });
+                    }
                 }
-
-
                 //me.selectedCard = card;
             } else if(me.selected) { // 取消选中
-                
-                me.div.css({'background':'transparent'});
-                me.selected = false;
-
                 if(me.onBoard) {
-                    board.selectedCard = null;
-                    me.highLightMovableCells('transparent');
+                   me.deClick();
                 }
             }
         });
@@ -64,8 +62,45 @@ Card = Class.extend({
         });
     },
 
+    deClick: function() {
+        var me = this;
+        me.div.css({'background':'transparent'});
+        me.selected = false;
+        board.selectedCard = null;
+        me.highLightMovableCells('transparent');
+        if (me.getAttackableCells().length > 0) {
+            me.getAttackableCells().forEach(function(cell) {
+                cell.dom.css({background: 'transparent'});
+            });
+        }
+    },
+
     moveTo: function(x, y) {
-        me.div.animate({left: x * cw, top: y * cw});
+        var me = this,
+            leftMove,
+            topMove;
+
+        me.deClick();
+        board.cellObj[me.x + '' + me.y].card = null;
+        board.cellObj[x + '' + y].card = me;
+
+        if (x >= me.x) {
+            leftMove = "+=" + (x - me.x) * cw;
+        } else {
+            leftMove = "-=" + (me.x - x) * cw;
+        }
+
+        if (y >= me.y) {
+            topMove = "+=" + (y - me.y) * cw;
+        } else {
+            topMove = "-=" + (me.y - y) * cw;
+        }
+
+        me.x = x;
+        me.y = y;
+        
+        me.div.animate({left: leftMove, top: topMove}, 'fast');
+        
     },
 
     highLightMovableCells: function(color) {
@@ -76,6 +111,27 @@ Card = Class.extend({
             cell.setColor(color ? color : 'green');
         });
 
+    },
+
+    getAttackableCells: function() {
+        var me = this,
+            cells = [];
+
+        if (me.type === 'B' && me.y > board.row /2) {
+            return null;
+        }
+
+        if (me.player === player2) {
+            for (var x = 0; x < board.column; x++) {
+                for (var y = 0; y < board.row / 2; y++) {
+                    if ( board.cellObj[x + '' + y].card &&
+                        (Math.abs(x - me.x) + Math.abs(y - me.y) <= me.ad) ) {
+                        cells.push(board.cellObj[x + '' + y]);
+                    }
+                }
+            }
+        }
+        return cells;
     },
 
     getMovableCells: function() {
