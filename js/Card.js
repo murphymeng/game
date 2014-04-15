@@ -18,19 +18,26 @@ Card = Class.extend({
         me.div.hide();
 
         me.div.click(function() {
-            if (!me.selected) {
+            if (!me.selected && !board.selectedCard) { // 在board中选中一张卡牌
                 me.div.css({'background':'green'});
                 me.selected = true;
 
                 if (me.onBoard) {
+                    board.selectedCard = me;
                     me.highLightMovableCells();
                 }
 
+
                 //me.selectedCard = card;
-            } else {
+            } else if(me.selected) { // 取消选中
+                
                 me.div.css({'background':'transparent'});
                 me.selected = false;
-                //me.selectedCard = null;
+
+                if(me.onBoard) {
+                    board.selectedCard = null;
+                    me.highLightMovableCells('transparent');
+                }
             }
         });
         me.div.append(me.img);
@@ -57,12 +64,16 @@ Card = Class.extend({
         });
     },
 
-    highLightMovableCells: function() {
+    moveTo: function(x, y) {
+        me.div.animate({left: x * cw, top: y * cw});
+    },
+
+    highLightMovableCells: function(color) {
         var me = this,
             cells = me.getMovableCells();
 
         cells.forEach(function(cell) {
-            cell.setColor('green');
+            cell.setColor(color ? color : 'green');
         });
 
     },

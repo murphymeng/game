@@ -16,7 +16,20 @@ Cell = Class.extend({
             height: cw,
             background: 'transparent'
         });
+        me.dom.on('click', function(){
+            if(board.selectedCard && me.isMovable()) {
+                board.selectedCard.moveTo(me.x, me.y);
+            }
+        })
         me.card = null;
+    },
+
+    isMovable: function() {
+        if (this.dom.css('backgroundColor') === 'green') {
+            return true;
+        } else {
+            return false;
+        }
     },
 
     isChuBingDian: function(x, y) {
