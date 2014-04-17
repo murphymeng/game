@@ -17,31 +17,31 @@ Card = Class.extend({
         $('body').append(el);
         me.div = $('#' + el.id);
         me.div.append(me.img);
-        me.div.append("<div class='card_hp'>"+ me.hp +"</div>")
+        me.div.append("<div class='card_hp'>"+ me.hp +"</div>");
         me.div.hide();
 
         me.div.click(function() {
             if (!me.selected && !board.selectedCard && me.onBoard) { // 在board中选中一张卡牌
-                me.div.css({'background':'green'});
+                me.div.addClass('selected');
                 me.selected = true;
 
                 board.selectedCard = me;
-                me.highLightMovableCells();
+                me.highLightMovableCells(true);
                 if (me.getAttackableCells().length > 0) {
                     me.getAttackableCells().forEach(function(cell) {
-                        cell.dom.css({background: 'red'});
+                        cell.dom.addClass('attackable');
                     });
                 }
 
-            } else if (!me.selected && !me.onBoard) {
+            } else if (!me.selected && !me.onBoard) { //在牌库中选中一张牌
                 if (me.player.paiku.selectedCard) {
                     me.player.paiku.selectedCard.deSelect();
                 }
-                me.div.css({'background':'green'});
+                me.div.addClass('selected');
                 me.selected = true;
                 me.player.paiku.selectedCard = me;
-            } else if(!me.selected && board.selectedCard) {
-                if (board.cellObj[me.x + '' + me.y].dom.css('backgroundColor') === 'rgb(255, 0, 0)') {
+            } else if(!me.selected && board.selectedCard) { //攻击卡牌
+                if (board.cellObj[me.x + '' + me.y].dom.hasClass('attackable')) {
                     board.selectedCard.fireEvent('startAttack', board.cellObj[me.x + '' + me.y].card);
                     board.selectedCard.deSelect();
                 }
@@ -78,13 +78,13 @@ Card = Class.extend({
 
     deSelect: function() {
         var me = this;
-        me.div.css({'background':'transparent'});
+        me.div.removeClass('selected');
         me.selected = false;
         board.selectedCard = null;
-        me.highLightMovableCells('transparent');
+        me.highLightMovableCells(false);
         if (me.getAttackableCells().length > 0) {
             me.getAttackableCells().forEach(function(cell) {
-                cell.dom.css({background: 'transparent'});
+                cell.dom.removeClass('attackable');
             });
         }
     },
@@ -117,12 +117,16 @@ Card = Class.extend({
         
     },
 
-    highLightMovableCells: function(color) {
+    highLightMovableCells: function(highlight) {
         var me = this,
             cells = me.getMovableCells();
 
         cells.forEach(function(cell) {
-            cell.setColor(color ? color : 'green');
+            if (highlight) {
+                cell.dom.addClass('movable');
+            } else {
+                cell.dom.removeClass('movable');
+            }
         });
 
     },
@@ -232,7 +236,7 @@ Card = Class.extend({
         me.paiku = null;
 
         board.div.append(me.div);
-        me.div.css({'background':'transparent'});
+        me.div.removeClass('selected');
         if (me.player.isP1) {
             top = 0;
             animateTop = "+=" + ay * cw;
@@ -256,11 +260,16 @@ Card = Class.extend({
     attackFace: function(face) {
         var me = this;
         face.leftHp -= me.at;
-        face.hpLine.animate({width: "-=" + 400 / face.hp * me.at}, function() {
-            face.hpValue.html(face.hpValue.html() - me.at);
+
+        face.hpLine.animate({'width': face.leftHp * 100 / face.hp+'%'}, function() {
             me.status = 2;
             me.fireEvent('attackDone');
         });
+        // face.hpLine.animate({width: "-=" + 400 / face.hp * me.at}, function() {
+        //     face.hpValue.html(face.hpValue.html() - me.at);
+        //     me.status = 2;
+        //     me.fireEvent('attackDone');
+        // });
     },
 
     attackCard: function(card) {

@@ -4,7 +4,6 @@ body {
 }
 
 .board {
-    margin-left: 300px;
     margin-top: 5px;
     width: 400px;
     height: 480px;
@@ -15,27 +14,19 @@ body {
 .face {
     width: 400px;
     height: 25px;
-    margin-left: 299px;
     border: 1px solid black;
     position: relative;
 }
 
-.hp_line {
-    width: 400px;
-    height: 25px;
-    background-color: red;
-}
-
 .hp_value {
-    margin-left: 190px;
-    padding-top: 3px;
     font-weight: bold;
+    color: black;
 }
 
 .paiku {
     margin-top: 30px;
-    margin-left: 300px;
     width: 400px;
+    float:left;
     height: 160px;
     background: url(../res/paiku.png) no-repeat;
     position: relative;
@@ -49,4 +40,26 @@ body {
     position: relative;
     top: -17px;
     left: 60px;
+}
+
+.act-count {
+    float: left;
+}
+
+.progress {
+    margin-bottom: 0
+}
+
+.movable {
+    background: green;
+    opacity: 0.5;
+}
+
+.attackable {
+    background: red;
+    opacity: 0.5;
+}
+
+.selected {
+    background: green;
 }

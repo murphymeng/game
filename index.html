@@ -1,7 +1,10 @@
-<html>
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title></title>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>游戏原型</title>
     <link rel="stylesheet" type="text/css" href="css/main.css">
     <script src="js/jquery.min.js" type="text/javascript"></script>
     <script src="js/Class.js" type="text/javascript"></script>
@@ -10,21 +13,34 @@
     <script src="js/Player.js" type="text/javascript"></script>
     <script src="js/Paiku.js" type="text/javascript"></script>
     <script src="js/Cell.js" type="text/javascript"></script>
-</head>
-<body>
-    <div id="face1" class="face" style="margin-top:2px">
-        <div class="hp_line">
-            <div class="hp_value"></div>
-        </div>
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class="container" style="width: 680px">
+      <div class="row">
+          <div class="col-md-8">
+              <div id="face1" class="progress" style="width:400px; margin-top:5px;margin-bottom:0">
+                <div class="progress-bar progress-bar-danger hp_line" role="progressbar" style="width: 100%;">
+                </div>
+              </div>
+              <div id="board" class="board"></div>
+              <div id="face2" class="progress" style="width:400px; margin-top:5px;margin-bottom:0">
+                <div class="progress-bar progress-bar-danger hp_line" role="progressbar" style="width: 100%;">
+                </div>
+              </div>
+              <div id="paiku1" class="paiku" style="display:none"></div>
+              <div id="paiku2" class="paiku"></div>
+          </div>
+
+          <div class="col-md-4">
+              <div style="font-size:25px;font-family:微软雅黑">敌方行动力： <span class='act-count-value'>3</span></div>
+              <div style="margin-top:470px;font-size:25px;font-family:微软雅黑">我方行动力： <span class='act-count-value'>3</span></div>
+          </div>
+
+      </div>
     </div>
-    <div id="board" class="board"></div>
-    <div id="face2" class="face" style="margin-top:4px">
-        <div class="hp_line">
-            <div class="hp_value"></div>
-        </div>
-    </div>
-    <div id="paiku1" class="paiku" style="display:none"></div>
-    <div id="paiku2" class="paiku"></div>
     <script src="js/main.js" type="text/javascript"></script>
-</body>
+    <script src="js/bootstrap.min.js"></script>
+  </body>
 </html>

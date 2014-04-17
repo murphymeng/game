@@ -13,8 +13,7 @@ Cell = Class.extend({
             left: x * cw,
             top: y * cw,
             width: cw,
-            height: cw,
-            background: 'transparent'
+            height: cw
         });
         me.dom.on('click', function() {
 
@@ -31,7 +30,7 @@ Cell = Class.extend({
     },
 
     isMovable: function() {
-        if (this.dom.css('backgroundColor') === 'rgb(0, 128, 0)') {
+        if (this.dom.hasClass('movable')) {
             return true;
         } else {
             return false;
@@ -48,7 +47,8 @@ Cell = Class.extend({
 
     setColor: function(color) {
         this.dom.css({
-            background: color
+            background: color,
+            'opacity':0.5
         });
     }
 });
