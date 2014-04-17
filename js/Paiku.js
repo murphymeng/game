@@ -21,11 +21,6 @@ Paiku = Class.extend({
 
     // 获取牌库中被选中的卡牌
     getSelectedCard: function() {
-        for(var i = 0; i < this.cards.length; i++) {
-            if (this.cards[i].selected === true) {
-                return this.cards[i];
-            }
-        }
-        return null;
+        return this.selectedCard;
     }
 });

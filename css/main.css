@@ -44,3 +44,9 @@ body {
 .card {
     position: relative;
 }
+
+.card_hp {
+    position: relative;
+    top: -17px;
+    left: 60px;
+}
