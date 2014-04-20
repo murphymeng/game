@@ -9,14 +9,20 @@ Card = Class.extend({
         me.status = 0; // 0: 回合开始 1: 已经移动过  2：已经攻击过
         me.img = new Image();
         me.img.src = config.img;
-        me.img.width = cw;
-        me.img.height = cw;
+        
 
         el = document.createElement('div');
         el.id = 'div-' + me.id;
         $('body').append(el);
         me.div = $('#' + el.id);
         me.div.append(me.img);
+        me.div.addClass('card');
+        
+        $(me.img).addClass('card-normal');
+        if (me.class) {
+            $(me.img).addClass(me.class);
+        }
+
         me.div.append("<div class='card_hp'>"+ me.hp +"</div>");
         me.div.hide();
 
@@ -42,19 +48,13 @@ Card = Class.extend({
                 me.player.paiku.selectedCard = me;
             } else if(!me.selected && board.selectedCard) { //攻击卡牌
                 if (board.cellObj[me.x + '' + me.y].dom.hasClass('attackable')) {
-                    board.selectedCard.fireEvent('startAttack', board.cellObj[me.x + '' + me.y].card);
+                    board.selectedCard.attack(board.cellObj[me.x + '' + me.y].card);
+                    //board.selectedCard.fireEvent('startAttack', board.cellObj[me.x + '' + me.y].card);
                     board.selectedCard.deSelect();
                 }
             } else if(me.selected) { // 取消选中
-                if(me.onBoard) {
-                   me.deSelect();
-                }
+                me.deSelect();
             }
-        });
-        
-
-        me.on('startAttack', function(aim) {
-            this.doAttackEffect(aim);
         });
 
         me.on('attackEffectDone', function(aim) {
@@ -64,9 +64,22 @@ Card = Class.extend({
                 me.attackCard(aim);
             } else {
                 if (me.player === player1) {
-                    me.attackFace(player2.face);
+                    if (me.getAttackableCells().length > 0) {
+                        me.getAttackableCells().forEach(function(cell) {
+                            me.attackCard(cell.card);
+                            me.status = 2;
+                            me.fireEvent('attackDone');
+                            return;
+                        });
+                    } else {
+                        me.attackFace(player2.face);
+                    }
                 } else {
-                    me.attackFace(player1.face);
+                    if (me.getMovableCells() && me.getMovableCells().length > 0) {
+                        me.attackCard(me.getMovableCells()[0].card);
+                    } else {
+                        me.attackFace(player1.face);
+                    }
                 }
             }
         });
@@ -76,17 +89,98 @@ Card = Class.extend({
         });
     },
 
+
+    attack: function(aim) {
+        var me = this,
+            leftValue,
+            topValue,
+            topOffset;
+
+
+        if (!aim && me.getAttackableCells().length > 0) {
+            aim = me.getAttackableCells()[0].card;
+        }
+
+        // 弓箭手的攻击动作
+        if (me.type === 'G') {
+
+            if (aim instanceof Card) {
+
+                if (aim.div.offset().left - me.div.offset().left > 0) {
+                    leftValue = '+=' + Math.abs(aim.div.offset().left - me.div.offset().left);
+                } else {
+                    leftValue = '+=' + Math.abs(aim.div.offset().left - me.div.offset().left);
+                }
+
+                if (aim.div.offset().top - me.div.offset().top > 0) {
+                    topValue = '+=' + Math.abs(aim.div.offset().top - me.div.offset().top);
+                } else {
+                    topValue = '-=' + Math.abs(aim.div.offset().top - me.div.offset().top);
+                }
+
+                
+            } else {
+                if (me.player === player1) {
+                    topOffset = board.div.offset().top + 400 - $('#arrow').height();
+                } else {
+                    topOffset = board.div.offset().top;
+                }
+                $('#arrow').show().offset({
+                    left: me.div.offset().left,
+                    top: me.div.offset().top + 25
+                })
+                .animate({
+                    left: leftValue,
+                    top: topValue
+                }, function() {
+                    $('#arrow').hide();
+                    me.fireEvent('attackEffectDone', aim);
+                });
+            }
+
+            $('#arrow').show().offset({
+                    left: me.div.offset().left + 25,
+                    top: me.div.offset().top + 25
+                })
+                .animate({
+                    left: leftValue,
+                    top: topValue
+                }, function() {
+                    $('#arrow').hide();
+                    me.fireEvent('attackEffectDone', aim);
+                });
+
+
+        } else if(me.type === 'B' || me.type === 'Q') {
+            if (me.player === player1) {
+                 me.div.animate({top: "+=20"}, 'fast')
+                    .animate({top: "-=20"}, 'fast', function() {
+                    me.fireEvent('attackEffectDone', aim);
+                });
+            } else {
+                me.div.animate({top: "-=20"}, 'fast')
+                    .animate({top: "+=20"}, 'fast', function() {
+                    me.fireEvent('attackEffectDone', aim);
+                });
+            }
+        }
+    },
+
     deSelect: function() {
         var me = this;
         me.div.removeClass('selected');
         me.selected = false;
-        board.selectedCard = null;
-        me.highLightMovableCells(false);
-        if (me.getAttackableCells().length > 0) {
-            me.getAttackableCells().forEach(function(cell) {
-                cell.dom.removeClass('attackable');
-            });
+
+        if (me.onBoard) {
+            board.selectedCard = null;
+            me.highLightMovableCells(false);
+            if (me.getAttackableCells() && me.getAttackableCells().length > 0) {
+                me.getAttackableCells().forEach(function(cell) {
+                    cell.dom.removeClass('attackable');
+                });
+            }
         }
+        
     },
 
     moveTo: function(x, y) {
@@ -113,7 +207,9 @@ Card = Class.extend({
         me.x = x;
         me.y = y;
         
-        me.div.animate({left: leftMove, top: topMove}, 'fast');
+        me.div.animate({left: leftMove, top: topMove}, 'fast', function() {
+            me.player.reduceActCount();
+        });
         
     },
 
@@ -133,15 +229,26 @@ Card = Class.extend({
 
     getAttackableCells: function() {
         var me = this,
-            cells = [];
+            cells = [],
+            x,
+            y;
 
         if (me.type === 'B' && me.y > board.row /2) {
-            return null;
+            return cells;
         }
 
         if (me.player === player2) {
-            for (var x = 0; x < board.column; x++) {
-                for (var y = 0; y < board.row / 2; y++) {
+            for (x = 0; x < board.column; x++) {
+                for (y = 0; y < board.row / 2; y++) {
+                    if ( board.cellObj[x + '' + y].card &&
+                        (Math.abs(x - me.x) + Math.abs(y - me.y) <= me.ad) ) {
+                        cells.push(board.cellObj[x + '' + y]);
+                    }
+                }
+            }
+        } else if(me.player === player1) {
+            for (x = 0; x < board.column; x++) {
+                for (y = board.row / 2; y < board.row; y++) {
                     if ( board.cellObj[x + '' + y].card &&
                         (Math.abs(x - me.x) + Math.abs(y - me.y) <= me.ad) ) {
                         cells.push(board.cellObj[x + '' + y]);
@@ -160,7 +267,8 @@ Card = Class.extend({
                 for (var y = board.row / 2; y < board.row - 1; y++) {
                     if (!board.cellObj[x + '' + y].card &&
                         (Math.abs(x - me.x) + Math.abs(y - me.y) <= me.md) &&
-                        y <= me.y) {
+                        ( (y < me.y || y === board.row / 2) || y > board.row / 2 && board.cellObj[x + '' + (y - 1)].card && board.cellObj[x + '' + (y - 1)].card !== me)) {
+
                         cells.push(board.cellObj[x + '' + y]);
                     }
                 }
@@ -247,35 +355,42 @@ Card = Class.extend({
         }
         me.div.css({left: x * cw, top: top})
             .animate({top: animateTop}, function() {
+                me.player.reduceActCount();
                 if (me.player === player1) {
                     me.player.autoDispatch();
                 }
             });
     },
 
-    reduceHp: function() {
-        var me = this;
-    },
-
     attackFace: function(face) {
         var me = this;
         face.leftHp -= me.at;
 
+        face.leftHp = face.leftHp >=0 ? face.leftHp : 0;
+
         face.hpLine.animate({'width': face.leftHp * 100 / face.hp+'%'}, function() {
+
+            if (face.leftHp === 0) {
+                if (me.player === player2) {
+                    bootbox.alert("你赢啦！！！");
+                } else {
+                    bootbox.alert("你跪啦！！！");
+                }
+                return;
+            }
             me.status = 2;
             me.fireEvent('attackDone');
         });
-        // face.hpLine.animate({width: "-=" + 400 / face.hp * me.at}, function() {
-        //     face.hpValue.html(face.hpValue.html() - me.at);
-        //     me.status = 2;
-        //     me.fireEvent('attackDone');
-        // });
+
     },
 
     attackCard: function(card) {
         var me = this;
-        me.reduceHp(card.at);
+        if (me.type !== 'G') {
+            me.reduceHp(card.at);
+        }
         card.reduceHp(me.at);
+        me.player.reduceActCount();
     },
 
     reduceHp: function(value) {
@@ -284,51 +399,11 @@ Card = Class.extend({
             me.div.find('.card_hp').html(me.leftHp - value);
             me.leftHp = me.leftHp - value;
         } else {
-            
-        }
-        
-    },
-
-    doAttackEffect: function(aim) {
-        var me = this;
-        if (me.player === player1) {
-            me.div.animate({top: "+=20"}, 'fast')
-                .animate({top: "-=20"}, 'fast', function() {
-                    me.fireEvent('attackEffectDone', aim);
-                });
-        } else {
-            me.div.animate({top: "-=20"}, 'fast')
-                .animate({top: "+=20"}, 'fast', function() {
-                    me.fireEvent('attackEffectDone', aim);
-                });
+            me.leave();
         }
     },
 
-    attack: function() {
-        var me = this;
-        if (me.type === 'B') {
-            if (me.y !== board.row/2 -1) {
-                return;
-            }
-            this.fireEvent('startAttack');
-        }
-    },
-
-    attack1: function() {
-        var me = this;
-
-        me.doAttackEffect();
-        me.doAttack();
-
-        // for (var x = 0; x < board.column; x++) {
-        //     for (var y = row/2; y < row; y++) {
-        //         if (Math.abs(me.x - x) + Math.abs(me.y - y) <= me.ad) {
-        //             if (board.getCellByPos(x, y).card) {
-        //                 board.getCellByPos(x, y).card.reduceHp(card.at);
-        //                 return;
-        //             }
-        //         }
-        //     }
-        // }
+    leave: function() {
+        this.div.remove();
     }
 });

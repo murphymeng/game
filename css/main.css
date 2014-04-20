@@ -33,13 +33,19 @@ body {
 }
 
 .card {
-    position: relative;
+    width: 80px;
+    height: 80px; 
+    position: absolute;
 }
 
 .card_hp {
-    position: relative;
-    top: -17px;
-    left: 60px;
+    position: absolute;
+    right: 2px;
+    bottom: -2px;
+}
+
+.card_hp {
+    margin-right: 0;
 }
 
 .act-count {
@@ -61,5 +67,20 @@ body {
 }
 
 .selected {
-    background: green;
+    background: #5cb85c;
+}
+
+.yahei {
+    font-family: 微软雅黑;
+}
+
+.card-normal {
+    max-width: 65px;
+    max-height: 65px;
+    margin-left: 5px;
+    margin-top: 5px;
+}
+
+.archer {
+    margin-left: 15px;
 }

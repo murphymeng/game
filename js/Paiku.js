@@ -14,7 +14,10 @@ Paiku = Class.extend({
             card.paiku = me;
             card.x = idx;
             me.el.append(card.div);
-            card.div.css({width: cw, height: cw, position: 'absolute', left: idx * cw});
+            card.div.css({
+                left: idx * cw,
+                display: 'table-cell'
+            });
             card.div.show();
         });
     },

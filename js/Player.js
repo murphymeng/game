@@ -23,12 +23,35 @@ var Player = Class.extend({
             });
         }
 
+        me.leftActCount = me.actCount;
+
+        if (me.isP1) {
+            me.actCountEl = $('#actCount1');
+        } else {
+            me.actCountEl = $('#actCount2');
+        }
+
+        me.actCountEl.html(me.leftActCount);
+
         me.on('autoShangzhen', function(card) {
             var cards = me.getBoardCards();
             $.each(cards, function(idx, card) {
 
             });
-            
+        });
+
+        me.on('autoAttackDone', function() {
+            player2.startRound();
+        });
+
+        me.on('actCountChange', function() {
+            if (me.leftActCount === 0) {
+                if (me === player1) {
+                    player2.startRound();
+                } else {
+                    player1.startRound();
+                }
+            }
         });
     },
 
@@ -41,15 +64,35 @@ var Player = Class.extend({
         return this;
     },
 
-    resetMoveCount: function() {
-        this.leftMoveCount = this.moveCount;
+    reduceActCount: function() {
+        var me = this;
+        me.leftActCount--;
+        me.actCountEl.html(me.leftActCount);
+        me.fireEvent('actCountChange');
+    },
+
+    resetActCount: function() {
+        this.leftActCount = this.actCount;
+        this.actCountEl.html(this.actCount);
     },
 
     startRound: function() {
         var me = this;
+        currentPlayer = me;
+        // 重置所有卡牌状态
+        me.getBoardCards().forEach(function(card) {
+            card.status = 0;
+        });
+        me.resetActCount();
         if (me.isP1) {
+            $('#p1round').show();
+            $('#endRoundButton').hide();
+            //$('#endRoundButton').attr({disabled: true});
             me.autoDispatch();
-            me.attack();
+        } else {
+            $('#p1round').hide();
+            $('#endRoundButton').show();
+            $('#endRoundButton').attr({disabled: false});
         }
     },
 
@@ -63,15 +106,14 @@ var Player = Class.extend({
             tmpArray.push(card);
         });
 
-        if (me.leftMoveCount === 0 || paikuCards.length === 0) {
+        if (me.leftActCount === 0 || paikuCards.length === 0) {
             me.autoAttack();
             return;
         }
 
         for (var i = 0; i< tmpArray.length; i++) {
-            if (me.leftMoveCount > 0 && paikuCards.length > 0) {
+            if (me.leftActCount > 0 && paikuCards.length > 0) {
                 tmpArray[i].shangzhen(tmpArray[i].x);
-                me.leftMoveCount--;
                 break;
             }
         }
@@ -91,15 +133,7 @@ var Player = Class.extend({
         }
 
         if (attackDone === true) {
-            me.submitRound();
-        }
-    },
-
-    submitRound: function() {
-        if (this === player1) {
-            currentPlayer = player2;
-        } else {
-            currentPlayer = player1;
+            me.fireEvent('autoAttackDone');
         }
     },
 
