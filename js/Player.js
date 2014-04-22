@@ -81,6 +81,9 @@ var Player = Class.extend({
         currentPlayer = me;
         // 重置所有卡牌状态
         me.getBoardCards().forEach(function(card) {
+            if (card.status === 2) {
+                card.div.find('img').css({ '-webkit-filter': 'grayscale(0%)'});
+            }
             card.status = 0;
         });
         me.resetActCount();

@@ -12,6 +12,7 @@ var cards1Config = [{
     id: 1,
     name: 'zhaoyun',
     type: 'B',
+    class: 'bubing',
     img: 'res/bubing.png',
     md: 1, // 移动距离
     at: 3, // 攻击力
@@ -33,6 +34,7 @@ var cards2Config = [{
     id: 4,
     name: 'bubing',
     type: 'B',
+    class: 'bubing',
     img: 'res/bubing.png',
     md: 1, // 移动距离
     at: 3,

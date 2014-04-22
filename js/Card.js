@@ -62,26 +62,18 @@ Card = Class.extend({
 
             if (aim instanceof Card) {
                 me.attackCard(aim);
-            } else {
-                if (me.player === player1) {
-                    if (me.getAttackableCells().length > 0) {
-                        me.getAttackableCells().forEach(function(cell) {
-                            me.attackCard(cell.card);
-                        });
-                    } else {
-                        me.attackFace(player2.face);
-                    }
-                } else {
-                    if (me.getAttackableCells() && me.getAttackableCells().length > 0) {
-                        me.attackCard(me.getAttackableCells()[0].card);
-                    } else {
-                        me.attackFace(player1.face);
-                    }
-                }
+            } else if (aim instanceof Face) {
+                me.attackFace(aim);
             }
+
+            me.status = 2;
         });
 
         me.on('attackDone', function() {
+            me.status = 2;
+            me.div.find('img').css({
+                '-webkit-filter': 'grayscale(100%)'
+            });
             this.player.autoAttack();
         });
     },
@@ -94,14 +86,15 @@ Card = Class.extend({
             topOffset,
             rotateAngle = 0;
 
-
-        if (!aim && me.getAttackableCells().length > 0) {
-            aim = me.getAttackableCells()[0].card;
-        } else {
-            if (me.player === player1) {
-                aim = player2.face;
-            } else {
+        if (!aim) {
+            if (me.player === player2) {
                 aim = player1.face;
+            } else {
+                if (me.getAttackableCells().length > 0) {
+                    aim = me.getAttackableCells()[0].card;
+                } else {
+                    aim = player2.face;
+                }
             }
         }
 
@@ -113,7 +106,7 @@ Card = Class.extend({
                 if (aim.div.offset().left - me.div.offset().left > 0) {
                     leftValue = '+=' + Math.abs(aim.div.offset().left - me.div.offset().left);
                 } else {
-                    leftValue = '+=' + Math.abs(aim.div.offset().left - me.div.offset().left);
+                    leftValue = '-=' + Math.abs(aim.div.offset().left - me.div.offset().left);
                 }
 
                 if (aim.div.offset().top - me.div.offset().top > 0) {
@@ -127,7 +120,7 @@ Card = Class.extend({
                     bian1 = leftValue.substr(2),
                     bian2 = topValue.substr(2);
 
-                if (bian1 === 0) {
+                if (parseInt(bian1, 10) === 0) {
                     rotateAngle = 0;
                 } else if (num1 === '-' && num2 === '-') {
                     rotateAngle = 270 + Math.abs(bian2 / bian1) * 180 / (Math.PI);
@@ -154,13 +147,10 @@ Card = Class.extend({
             $('#arrow').show().offset({
                     left: me.div.offset().left + 25,
                     top: me.div.offset().top + 25
-                });
-
-            if (rotateAngle) {
-                $('#arrow').css({
+                })
+                .css({
                     '-webkit-transform': 'rotate(' + rotateAngle + 'deg)'
                 });
-            }
 
             $('#arrow').animate({
                 left: leftValue,
@@ -398,7 +388,6 @@ Card = Class.extend({
                 }
                 return;
             }
-            me.status = 2;
             me.fireEvent('attackDone');
         });
 
@@ -411,7 +400,6 @@ Card = Class.extend({
         }
         card.reduceHp(me.at);
         me.player.reduceActCount();
-        me.status = 2;
         me.fireEvent('attackDone');
     },
 
