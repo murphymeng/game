@@ -124,6 +124,10 @@ var Player = Class.extend({
             cards = me.getBoardCards(),
             attackDone = true;
 
+        if (currentPlayer === player2) {
+            return;
+        }
+
         for (var i = 0; i < cards.length; i++) {
             if (cards[i].status !== 2) {
                 cards[i].attack();

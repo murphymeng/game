@@ -72,8 +72,8 @@ Card = Class.extend({
                         me.attackFace(player2.face);
                     }
                 } else {
-                    if (me.getMovableCells() && me.getMovableCells().length > 0) {
-                        me.attackCard(me.getMovableCells()[0].card);
+                    if (me.getAttackableCells() && me.getAttackableCells().length > 0) {
+                        me.attackCard(me.getAttackableCells()[0].card);
                     } else {
                         me.attackFace(player1.face);
                     }
@@ -159,7 +159,7 @@ Card = Class.extend({
             if (rotateAngle) {
                 $('#arrow').css({
                     '-webkit-transform': 'rotate(' + rotateAngle + 'deg)'
-                })
+                });
             }
 
             $('#arrow').animate({
