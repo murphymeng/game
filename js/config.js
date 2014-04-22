@@ -1,4 +1,14 @@
 var cards1Config = [{
+    id: 3,
+    name: 'archer',
+    type: 'G',
+    class: 'archer',
+    img: 'res/archer.png',
+    md: 1, // 移动距离
+    at: 3,
+    ad: 3,
+    hp: 10
+}, {
     id: 1,
     name: 'zhaoyun',
     type: 'B',
@@ -16,16 +26,6 @@ var cards1Config = [{
     md: 1, // 移动距离
     at: 3,
     ad: 1,
-    hp: 10
-}, {
-    id: 3,
-    name: 'archer',
-    type: 'G',
-    class: 'archer',
-    img: 'res/archer.png',
-    md: 1, // 移动距离
-    at: 3,
-    ad: 2,
     hp: 10
 }];
 
