@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>游戏原型</title>
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <script src="js/jquery.min.js" type="text/javascript"></script>
+    <script src="js/socket.io/socket.io.js"></script>
+    <script src="js/bootbox.min.js" type="text/javascript"></script>
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    
+  </head>
+  <body>
+    <script type="text/javascript">
+
+    var socket = io.connect('http://localhost:8888');
+    var uid = <? echo $user['id'];?>;
+
+    $(document).ready(function() {
+      $('button').click(function() {
+        socket.emit('challenge', {fromUid: uid, toUid: parseInt(this.id, 10)});
+      });
+
+      socket.on('startFight', function (data) {
+        if (data.fromUid === uid || data.toUid === uid) {
+          location.href="./fight?fromUid=" + data.fromUid + "&toUid=" + data.toUid;
+        }
+      });
+
+      socket.on('challenge', function (data) {
+        if (data.fromUid === uid) {
+          return;
+        }
+        console.log(data);
+        if (data.toUid === <?php echo $user['id'];?>) {
+          bootbox.dialog({
+            message: "挑战邀请",
+            title: "玩家" + data.fromUid + "向你发起了挑战！",
+            buttons: {
+                success: {
+                  label: "接受挑战",
+                  className: "btn-success",
+                  callback: function() {
+                    socket.emit('startFight', {fromUid: data.fromUid, toUid: data.toUid});
+                  }
+                },
+              danger: {
+                label: "灰溜溜逃走",
+                className: "btn-danger",
+                callback: function() {
+                  return;
+                }
+              }
+            }
+          });
+        }
+      });
+    });
+    </script>
+    <div class="container" style="width: 680px">
+      <ul>
+        <? foreach($users as $user):?>
+        <li><span><? echo $user['username'];?><span> <button type="button" id="<? echo $user['id'];?>">挑战</button></li>
+        <? endforeach;?>
+      </ul>
+    </div>
+    <script src="js/bootstrap.min.js"></script>
+
+    <img id="arrow" style="display:none;" width=30 height=30 src="res/arrow.png" />
+  </body>
+</html>

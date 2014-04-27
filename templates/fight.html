@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>游戏原型</title>
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <script src="js/jquery.min.js" type="text/javascript"></script>
+    <script src="js/socket.io/socket.io.js"></script>
+    <script src="js/bootbox.min.js" type="text/javascript"></script>
+    <script src="js/Class.js" type="text/javascript"></script>
+    <script src="js/face.js" type="text/javascript"></script>
+    <script src="js/Card.js" type="text/javascript"></script>
+    <script src="js/Player.js" type="text/javascript"></script>
+    <script src="js/Paiku.js" type="text/javascript"></script>
+    <script src="js/Cell.js" type="text/javascript"></script>
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body>
+    <script type="text/javascript">
+    var player1Id = <? echo $enemy['id'];?>;
+    var player2Id = <? echo $me['id'];?>;
+    </script>
+    <div class="container" style="width: 680px">
+      <div class="row">
+          <div class="col-md-8">
+              <div id="face1" class="progress" style="width:400px; margin-top:5px;margin-bottom:0">
+                <div class="progress-bar progress-bar-danger hp_line" role="progressbar" style="width: 100%;">
+                </div>
+              </div>
+              <div id="board" class="board"></div>
+              <div id="face2" class="progress" style="width:400px; margin-top:5px;margin-bottom:0">
+                <div class="progress-bar progress-bar-danger hp_line" role="progressbar" style="width: 100%;">
+                </div>
+              </div>
+              <div id="paiku1" class="paiku" style="display:none"></div>
+              <div id="paiku2" class="paiku"></div>
+          </div>
+
+          <div class="col-md-4">
+
+              <div style="font-size:25px;font-family:微软雅黑; margin-top: 190px">敌方行动力： <span id="actCount1" class='act-countvalue'></span></div>
+
+              <div id="p1round" disabled="true" class="btn btn-primary btn-danger yahei" style="width: 140px; height: 50px; font-size:25px; margin-top: 20px; margin-bottom:0" role="button">敌方回合</div>
+
+              <div id="endRoundButton" class="btn btn-primary yahei" style="width: 140px; height: 50px; font-size:25px; margin-top: 20px; margin-bottom:0" role="button">结束回合</div>
+
+              <div style="margin-top:20px;font-size:25px;font-family:微软雅黑">我方行动力： <span id="actCount2" class='act-countvalue'></span></div>
+
+          </div>
+
+      </div>
+    </div>
+    <script src="js/main.js" type="text/javascript"></script>
+    <script src="js/bootstrap.min.js"></script>
+
+    <img id="arrow" style="display:none;" width=30 height=30 src="res/arrow.png" />
+  </body>
+</html>

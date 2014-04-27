@@ -17,11 +17,11 @@ var Player = Class.extend({
         var me = this;
         me.handlers = {};
         $.extend(me, config);
-        if (me.cards) {
-            $.each(me.cards, function(idx, card) {
-                card.player = me;
-            });
-        }
+        // if (me.cards && me.cards.length > 0) {
+        //     $.each(me.cards, function(idx, card) {
+        //         card.player = me;
+        //     });
+        // }
 
         me.leftActCount = me.actCount;
 
@@ -53,6 +53,16 @@ var Player = Class.extend({
                 }
             }
         });
+    },
+
+    setCards: function(cards) {
+        var me = this;
+        me.cards = cards;
+        if (me.cards && me.cards.length > 0) {
+            $.each(me.cards, function(idx, card) {
+                card.player = me;
+            });
+        }
     },
 
     fireEvent: function(eventType) {

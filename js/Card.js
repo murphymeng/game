@@ -4,11 +4,11 @@ Card = Class.extend({
         var me = this,
             el;
         $.extend(me, config);
-        me.leftHp = me.hp;
+        me.leftHp = me.HP;
         me.handlers = {};
         me.status = 0; // 0: 回合开始 1: 已经移动过  2：已经攻击过
         me.img = new Image();
-        me.img.src = config.img;
+        me.img.src = 'res/' + config.img;
         
 
         el = document.createElement('div');
@@ -23,7 +23,7 @@ Card = Class.extend({
             $(me.img).addClass(me.class);
         }
 
-        me.div.append("<div class='card_hp'>"+ me.hp +"</div>");
+        me.div.append("<div class='card_hp'>"+ me.HP +"</div>");
         me.div.hide();
 
         me.div.click(function() {
@@ -251,7 +251,7 @@ Card = Class.extend({
             for (x = 0; x < board.column; x++) {
                 for (y = 0; y < board.row / 2; y++) {
                     if ( board.cellObj[x + '' + y].card &&
-                        (Math.abs(x - me.x) + Math.abs(y - me.y) <= me.ad) ) {
+                        (Math.abs(x - me.x) + Math.abs(y - me.y) <= me.AD) ) {
                         cells.push(board.cellObj[x + '' + y]);
                     }
                 }
@@ -260,7 +260,7 @@ Card = Class.extend({
             for (x = 0; x < board.column; x++) {
                 for (y = board.row / 2; y < board.row; y++) {
                     if ( board.cellObj[x + '' + y].card &&
-                        (Math.abs(x - me.x) + Math.abs(y - me.y) <= me.ad) ) {
+                        (Math.abs(x - me.x) + Math.abs(y - me.y) <= me.AD) ) {
                         cells.push(board.cellObj[x + '' + y]);
                     }
                 }
@@ -276,7 +276,7 @@ Card = Class.extend({
             for (var x = 0; x < board.column; x++) {
                 for (var y = board.row / 2; y < board.row - 1; y++) {
                     if (!board.cellObj[x + '' + y].card &&
-                        (Math.abs(x - me.x) + Math.abs(y - me.y) <= me.md) &&
+                        (Math.abs(x - me.x) + Math.abs(y - me.y) <= me.MD) &&
                         ( (y < me.y || y === board.row / 2) || y > board.row / 2 && board.cellObj[x + '' + (y - 1)].card && board.cellObj[x + '' + (y - 1)].card !== me)) {
 
                         cells.push(board.cellObj[x + '' + y]);
@@ -374,11 +374,11 @@ Card = Class.extend({
 
     attackFace: function(face) {
         var me = this;
-        face.leftHp -= me.at;
+        face.leftHp -= me.AT;
 
         face.leftHp = face.leftHp >=0 ? face.leftHp : 0;
 
-        face.hpLine.animate({'width': face.leftHp * 100 / face.hp+'%'}, function() {
+        face.hpLine.animate({'width': face.leftHp * 100 / face.HP+'%'}, function() {
 
             if (face.leftHp === 0) {
                 if (me.player === player2) {
@@ -396,9 +396,9 @@ Card = Class.extend({
     attackCard: function(card) {
         var me = this;
         if (me.type !== 'G') {
-            me.reduceHp(card.at);
+            me.reduceHp(card.AT);
         }
-        card.reduceHp(me.at);
+        card.reduceHp(me.AT);
         me.player.reduceActCount();
         me.fireEvent('attackDone');
     },
