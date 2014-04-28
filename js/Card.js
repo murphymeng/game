@@ -48,8 +48,11 @@ Card = Class.extend({
                 me.player.paiku.selectedCard = me;
             } else if(!me.selected && board.selectedCard) { //攻击卡牌
                 if (board.cellObj[me.x + '' + me.y].dom.hasClass('attackable')) {
-                    board.selectedCard.attack(board.cellObj[me.x + '' + me.y].card);
-                    //board.selectedCard.fireEvent('startAttack', board.cellObj[me.x + '' + me.y].card);
+                    socket.emit('attack', {
+                        cardId: board.selectedCard.id,
+                        attackCardId: me.id
+                    });
+                    //board.selectedCard.attack(board.cellObj[me.x + '' + me.y].card);
                     board.selectedCard.deSelect();
                 }
             } else if(me.selected) { // 取消选中
@@ -369,7 +372,7 @@ Card = Class.extend({
                     //me.player.autoDispatch();
                 }
                 if (me.uid === player2Id) {
-                    socket.emit('shangzhen', {cardId: me.id, x: x});
+                    //socket.emit('shangzhen', {cardId: me.id, x: x});
                 }
             });
     },

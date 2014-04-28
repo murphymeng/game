@@ -81,4 +81,16 @@ io.sockets.on('connection', function (socket) {
   socket.on('shangzhen', function(data) {
     io.sockets.in(socket.room).emit('shangzhen', data);
   });
+
+  socket.on('startRound', function(data) {
+    io.sockets.in(socket.room).emit('startRound', data);
+  });
+
+  socket.on('move', function(data) {
+    io.sockets.in(socket.room).emit('move', data);
+  });
+
+  socket.on('attack', function(data) {
+    io.sockets.in(socket.room).emit('attack', data);
+  });
 });

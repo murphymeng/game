@@ -13,12 +13,14 @@ var cw = 80,
     }),
     player1 = new Player({
         'id': 'player1',
+        'uid': player1Id,
         'actCount': 5,
         'isP1': true,
         'face': face1
     }),
     player2 = new Player({
         'id': 'player2',
+        'uid': player2Id,
         'actCount': 115,
         'isP1': false,
         'face': face2
@@ -65,10 +67,42 @@ function getCard(cardId) {
     return returnCard;
 }
 
+function getPlayer(uid) {
+    if (player1.uid === uid) {
+        return player1;
+    } else {
+        return player2;
+    }
+}
+
 socket.on('shangzhen', function (data) {
     var card = getCard(data.cardId);
-    if (card.uid === player1Id) {
-        card.shangzhen(data.x);
+    card.shangzhen(data.x);
+});
+
+socket.on('startRound', function (data) {
+    var player = getPlayer(data.uid);
+    player.startRound();
+});
+
+socket.on('move', function (data) {
+    var toY,
+        card = getCard(data.cardId);
+
+    if (uid === card.uid) {
+        toY = data.y;
+    } else {
+        toY = board.row - 1 - data.y;
+    }
+    card.moveTo(data.x, toY);
+});
+
+socket.on('attack', function (data) {
+    var card = getCard(data.cardId);
+    if (data.attackCardId) {
+        card.attack(getCard(data.attackCardId));
+    } else {
+        card.attack();
     }
 });
 
@@ -108,8 +142,8 @@ Event = Class.extend({
                     player2.startRound();
                 }
                 $('#endRoundButton').click(function() {
-                    $('#endRoundButton').attr({disabled: true});
-                    player1.startRound();
+                    socket.emit('startRound', {uid: player1Id});
+                    //player1.startRound();
                 });
             }
         })

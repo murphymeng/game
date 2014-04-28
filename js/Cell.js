@@ -16,14 +16,14 @@ Cell = Class.extend({
             height: cw
         });
         me.dom.on('click', function() {
-
             if (!me.card && player2.paiku.getSelectedCard() && me.y === board.row - 1) {
-                player2.paiku.getSelectedCard().shangzhen(me.x);
+                //player2.paiku.getSelectedCard().shangzhen(me.x);
+                socket.emit('shangzhen', {cardId: player2.paiku.getSelectedCard().id, x: x});
                 return;
             }
-
             if(board.selectedCard && me.isMovable()) {
-                board.selectedCard.moveTo(me.x, me.y);
+                socket.emit('move', {cardId: board.selectedCard.id, x: me.x, y: me.y});
+                //board.selectedCard.moveTo(me.x, me.y);
             }
         });
         me.card = null;
