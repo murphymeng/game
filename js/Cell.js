@@ -17,8 +17,8 @@ Cell = Class.extend({
         });
         me.dom.on('click', function() {
 
-            if (!me.card && currentPlayer.paiku.getSelectedCard() && me.y === board.row - 1) {
-                currentPlayer.paiku.getSelectedCard().shangzhen(me.x);
+            if (!me.card && player2.paiku.getSelectedCard() && me.y === board.row - 1) {
+                player2.paiku.getSelectedCard().shangzhen(me.x);
                 return;
             }
 

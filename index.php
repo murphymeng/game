@@ -43,7 +43,8 @@ $app->get('/fight', function() use ($app) {
         $user2 = R::getRow("select * from users where id={$fromUid}");
     }
     $app->render('fight.html', array('me'=>$user,
-                                     'enemy'=>$user2));
+                                     'enemy'=>$user2,
+                                     'firstPlayId'=>$toUid));
 });
 
 $app->get('/login', function() use ($app) {

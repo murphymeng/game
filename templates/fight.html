@@ -20,8 +20,10 @@
   </head>
   <body>
     <script type="text/javascript">
+    var firstPlayId = <? echo $firstPlayId;?>;
     var player1Id = <? echo $enemy['id'];?>;
     var player2Id = <? echo $me['id'];?>;
+    var socket = io.connect('http://localhost:8888');
     </script>
     <div class="container" style="width: 680px">
       <div class="row">

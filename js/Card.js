@@ -323,7 +323,6 @@ Card = Class.extend({
             animateTop,
             ay; // ay 代表可上阵的Y坐标，默认为本方最贴近中线的y坐标
         
-    
         if (me.player.isP1) {
             for (ay = board.row / 2 - 1; ay >= 0; ay--) {
                 if (!board.cellObj[x + "" + ay].card) {
@@ -367,7 +366,10 @@ Card = Class.extend({
             .animate({top: animateTop}, function() {
                 me.player.reduceActCount();
                 if (me.player === player1) {
-                    me.player.autoDispatch();
+                    //me.player.autoDispatch();
+                }
+                if (me.uid === player2Id) {
+                    socket.emit('shangzhen', {cardId: me.id, x: x});
                 }
             });
     },

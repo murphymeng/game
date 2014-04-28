@@ -4,7 +4,10 @@ Paiku = Class.extend({
     column: 2,
     init: function(cards, id) {
         var me = this;
-        me.cards = cards;
+        me.cards = [];
+        cards.forEach(function(card) {
+            me.cards.push(card);
+        });
         me.el = $("#" + id);
         me.left = me.el.position().left;
         me.top = me.el.position().top;

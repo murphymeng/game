@@ -77,4 +77,8 @@ io.sockets.on('connection', function (socket) {
   socket.on('startFight', function(data) {
     io.sockets.in(socket.room).emit('startFight', data);
   });
+
+  socket.on('shangzhen', function(data) {
+    io.sockets.in(socket.room).emit('shangzhen', data);
+  });
 });

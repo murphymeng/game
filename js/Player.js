@@ -101,7 +101,7 @@ var Player = Class.extend({
             $('#p1round').show();
             $('#endRoundButton').hide();
             //$('#endRoundButton').attr({disabled: true});
-            me.autoDispatch();
+            //me.autoDispatch();
         } else {
             $('#p1round').hide();
             $('#endRoundButton').show();

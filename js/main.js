@@ -47,6 +47,31 @@ var board = {
     }
 };
 
+function getCard(cardId) {
+    var returnCard = null;
+    cards1.forEach(function(card) {
+        if (card.id === cardId) {
+            returnCard = card;
+            return;
+        }
+    });
+
+    cards2.forEach(function(card) {
+        if (card.id === cardId) {
+            returnCard = card;
+            return;
+        }
+    });
+    return returnCard;
+}
+
+socket.on('shangzhen', function (data) {
+    var card = getCard(data.cardId);
+    if (card.uid === player1Id) {
+        card.shangzhen(data.x);
+    }
+});
+
 Event = Class.extend({
 
     // 事件处理器
@@ -59,12 +84,14 @@ Event = Class.extend({
             if (cards1Config.length > 0 && cards2Config.length > 0) {
 
                 $.each(cards1Config, function(idx, cardConfig) {
-                    cardConfig.id = 'cards1-' + idx;
+                    cardConfig.id = player1Id + '-' + cardConfig.id;
+                    cardConfig.uid = player1Id;
                     cards1.push(new Card(cardConfig));
                 });
 
                 $.each(cards2Config, function(idx, cardConfig) {
-                    cardConfig.id = 'cards2-' + idx;
+                    cardConfig.id = player2Id + '-' + cardConfig.id;
+                    cardConfig.uid = player2Id;
                     cards2.push(new Card(cardConfig));
                 });
 
@@ -75,7 +102,11 @@ Event = Class.extend({
                 player2.createPaiku('paiku2');
 
                 board.init();
-                player1.startRound();
+                if (player1Id === firstPlayId) {
+                    player1.startRound();
+                } else {
+                    player2.startRound();
+                }
                 $('#endRoundButton').click(function() {
                     $('#endRoundButton').attr({disabled: true});
                     player1.startRound();
@@ -83,6 +114,7 @@ Event = Class.extend({
             }
         })
     },
+
     on: function(eventType, handler) {
         var me = this;
         if (!(eventType in me.handlers)) {
