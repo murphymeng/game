@@ -27,6 +27,7 @@ Card = Class.extend({
         me.div.hide();
 
         me.div.click(function() {
+
             if (!me.selected && !board.selectedCard && me.onBoard) { // 在board中选中一张卡牌
                 me.div.addClass('selected');
                 me.selected = true;
@@ -404,7 +405,7 @@ Card = Class.extend({
             me.reduceHp(card.AT);
         }
         card.reduceHp(me.AT);
-        me.player.reduceActCount();
+        //me.player.reduceActCount();
         me.fireEvent('attackDone');
     },
 

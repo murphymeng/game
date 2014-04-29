@@ -45,13 +45,13 @@ var Player = Class.extend({
         });
 
         me.on('actCountChange', function() {
-            if (me.leftActCount === 0) {
-                if (me === player1) {
-                    player2.startRound();
-                } else {
-                    player1.startRound();
-                }
-            }
+            // if (me.leftActCount === 0) {
+            //     if (me === player1) {
+            //         player2.startRound();
+            //     } else {
+            //         player1.startRound();
+            //     }
+            // }
         });
     },
 

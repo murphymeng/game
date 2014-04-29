@@ -21,7 +21,7 @@ var cw = 80,
     player2 = new Player({
         'id': 'player2',
         'uid': player2Id,
-        'actCount': 115,
+        'actCount': 5,
         'isP1': false,
         'face': face2
     }),
@@ -74,6 +74,8 @@ function getPlayer(uid) {
         return player2;
     }
 }
+
+myself = getPlayer(uid);
 
 socket.on('shangzhen', function (data) {
     var card = getCard(data.cardId);
@@ -177,6 +179,7 @@ socket.on('say', function (data) {
 });
 
 $(document).ready(function() {
+
     $.ajax({
       url: './cards',
       dataType: "json",

@@ -26,16 +26,18 @@
     var uid = <? echo $me['id'];?>;
     var socket = io.connect('http://localhost:8888');
     </script>
-    <div class="container" style="width: 680px">
+    <div class="container" style="width: 700px">
       <div class="row">
           <div class="col-md-8">
               <div id="face1" class="progress" style="width:400px; margin-top:5px;margin-bottom:0">
                 <div class="progress-bar progress-bar-danger hp_line" role="progressbar" style="width: 100%;">
+                  <span class="hp-value"></span>
                 </div>
               </div>
               <div id="board" class="board"></div>
               <div id="face2" class="progress" style="width:400px; margin-top:5px;margin-bottom:0">
                 <div class="progress-bar progress-bar-danger hp_line" role="progressbar" style="width: 100%;">
+                  <span class="hp-value"></span>
                 </div>
               </div>
               <div id="paiku1" class="paiku" style="display:none"></div>

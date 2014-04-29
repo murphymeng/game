@@ -16,6 +16,9 @@ Cell = Class.extend({
             height: cw
         });
         me.dom.on('click', function() {
+            if (myself.leftActCount ===0 || currentPlayer !== myself) {
+                return;
+            }
             if (!me.card && player2.paiku.getSelectedCard() && me.y === board.row - 1) {
                 //player2.paiku.getSelectedCard().shangzhen(me.x);
                 socket.emit('shangzhen', {cardId: player2.paiku.getSelectedCard().id, x: x});
