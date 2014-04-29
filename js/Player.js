@@ -78,7 +78,7 @@ var Player = Class.extend({
         var me = this;
         me.leftActCount--;
         me.actCountEl.html(me.leftActCount);
-        me.fireEvent('actCountChange');
+        //me.fireEvent('actCountChange');
     },
 
     resetActCount: function() {

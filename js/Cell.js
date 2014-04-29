@@ -16,7 +16,7 @@ Cell = Class.extend({
             height: cw
         });
         me.dom.on('click', function() {
-            if (myself.leftActCount ===0 || currentPlayer !== myself) {
+            if (currentPlayer !== myself) {
                 return;
             }
             if (!me.card && player2.paiku.getSelectedCard() && me.y === board.row - 1) {
@@ -24,6 +24,13 @@ Cell = Class.extend({
                 socket.emit('shangzhen', {cardId: player2.paiku.getSelectedCard().id, x: x});
                 return;
             }
+
+            if (!me.card && board.selectedCard && me.isAttackable()) {
+                socket.emit('attack', {
+                    cardId: board.selectedCard.id
+                });
+            }
+
             if(board.selectedCard && me.isMovable()) {
                 socket.emit('move', {cardId: board.selectedCard.id, x: me.x, y: me.y});
                 //board.selectedCard.moveTo(me.x, me.y);
@@ -34,6 +41,14 @@ Cell = Class.extend({
 
     isMovable: function() {
         if (this.dom.hasClass('movable')) {
+            return true;
+        } else {
+            return false;
+        }
+    },
+
+    isAttackable: function() {
+        if (this.dom.hasClass('attackable')) {
             return true;
         } else {
             return false;

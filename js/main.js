@@ -108,6 +108,10 @@ socket.on('attack', function (data) {
     }
 });
 
+socket.on('reduceActCount', function (data) {
+    getPlayer(data.uid).reduceActCount();
+})
+
 Event = Class.extend({
 
     // 事件处理器
@@ -179,6 +183,14 @@ socket.on('say', function (data) {
 });
 
 $(document).ready(function() {
+
+    if (firstPlayId === player2Id) {
+        $('#endRoundButton').show();
+        $('#p1round').hide();
+    } else {
+        $('#endRoundButton').hide();
+        $('#p1round').show();
+    }
 
     $.ajax({
       url: './cards',

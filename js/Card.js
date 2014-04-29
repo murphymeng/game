@@ -22,13 +22,19 @@ Card = Class.extend({
         if (me.class) {
             $(me.img).addClass(me.class);
         }
-
+         me.div.append("<div class='card-at'>"+ me.AT +"</div>");
         me.div.append("<div class='card_hp'>"+ me.HP +"</div>");
         me.div.hide();
 
         me.div.click(function() {
 
-            if (!me.selected && !board.selectedCard && me.onBoard) { // 在board中选中一张卡牌
+            if (!me.selected 
+                && !board.selectedCard 
+                && me.onBoard 
+                && me.player === player2
+                && me.status !== 2) {
+
+                 // 在board中选中一张卡牌
                 me.div.addClass('selected');
                 me.selected = true;
 
@@ -40,7 +46,7 @@ Card = Class.extend({
                     });
                 }
 
-            } else if (!me.selected && !me.onBoard) { //在牌库中选中一张牌
+            } else if (!me.selected && !me.onBoard && currentPlayer === player2) { //在牌库中选中一张牌
                 if (me.player.paiku.selectedCard) {
                     me.player.paiku.selectedCard.deSelect();
                 }
@@ -54,7 +60,7 @@ Card = Class.extend({
                         attackCardId: me.id
                     });
                     //board.selectedCard.attack(board.cellObj[me.x + '' + me.y].card);
-                    board.selectedCard.deSelect();
+                    
                 }
             } else if(me.selected) { // 取消选中
                 me.deSelect();
@@ -89,6 +95,8 @@ Card = Class.extend({
             topValue,
             topOffset,
             rotateAngle = 0;
+
+        me.deSelect();
 
         if (!aim) {
             if (me.player === player2) {
@@ -222,7 +230,7 @@ Card = Class.extend({
         me.y = y;
         
         me.div.animate({left: leftMove, top: topMove}, 'fast', function() {
-            me.player.reduceActCount();
+            //me.player.reduceActCount();
         });
         
     },
@@ -254,8 +262,7 @@ Card = Class.extend({
         if (me.player === player2) {
             for (x = 0; x < board.column; x++) {
                 for (y = 0; y < board.row / 2; y++) {
-                    if ( board.cellObj[x + '' + y].card &&
-                        (Math.abs(x - me.x) + Math.abs(y - me.y) <= me.AD) ) {
+                    if ( (Math.abs(x - me.x) + Math.abs(y - me.y) <= me.AD) ) {
                         cells.push(board.cellObj[x + '' + y]);
                     }
                 }
@@ -263,8 +270,7 @@ Card = Class.extend({
         } else if(me.player === player1) {
             for (x = 0; x < board.column; x++) {
                 for (y = board.row / 2; y < board.row; y++) {
-                    if ( board.cellObj[x + '' + y].card &&
-                        (Math.abs(x - me.x) + Math.abs(y - me.y) <= me.AD) ) {
+                    if ( (Math.abs(x - me.x) + Math.abs(y - me.y) <= me.AD) ) {
                         cells.push(board.cellObj[x + '' + y]);
                     }
                 }
@@ -383,8 +389,8 @@ Card = Class.extend({
         face.leftHp -= me.AT;
 
         face.leftHp = face.leftHp >=0 ? face.leftHp : 0;
-
-        face.hpLine.animate({'width': face.leftHp * 100 / face.HP+'%'}, function() {
+        face.hpValue.html(face.leftHp);
+        face.hpLine.animate({'width': face.leftHp * 100 / face.HP + '%'}, function() {
 
             if (face.leftHp === 0) {
                 if (me.player === player2) {

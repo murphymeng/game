@@ -39,9 +39,21 @@ body {
 }
 
 .card_hp {
+    color: red;
+    font-weight: bold;
+    font-size: 13px;
     position: absolute;
-    right: 2px;
-    bottom: -2px;
+    right: 3px;
+    bottom: -1px;
+}
+
+.card-at {
+    color: blue;
+    font-weight: bold;
+    font-size: 13px;
+    position: absolute;
+    left: 5px;
+    bottom: -1px;
 }
 
 .card_hp {

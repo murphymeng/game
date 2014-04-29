@@ -7,10 +7,7 @@ var port = 8888;
  
 var app = http.createServer(function (request, response) {
  
-    //console.log('request starting...111111111111111111111111111111111111111111111');
-    
     var filePath = '.' + request.url;
-    //console.log(url.parse(request.url).pathname + '333333');
     if (filePath == './')
         filePath = './index.html';
     else {
