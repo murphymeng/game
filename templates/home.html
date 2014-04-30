@@ -14,9 +14,14 @@
     
   </head>
   <body>
+    <nav class="navbar navbar-default" role="navigation">
+      <div class="container">
+        <p class="navbar-text navbar-right">用户名： <a href="#" class="navbar-link"><? echo $user['username'];?></a></p>
+      </div>
+    </nav>
     <script type="text/javascript">
 
-    var socket = io.connect('http://localhost:8888');
+    var socket = io.connect('http://192.168.61.97:8888');
     var uid = <? echo $user['id'];?>;
 
     $(document).ready(function() {
@@ -61,11 +66,12 @@
     });
     </script>
     <div class="container" style="width: 680px">
-      <ul>
+      <div class="list-group">
+        <div class="list-group-item"><h4 class="list-group-item-heading">好友列表</h4></div>
         <? foreach($users as $user):?>
-        <li><span><? echo $user['username'];?><span> <button type="button" id="<? echo $user['id'];?>">挑战</button></li>
+        <div class="list-group-item"><span style="width:100px"><? echo $user['username'];?></span> <button class="btn btn-default btn-primary" style="margin-left: 30px" type="button" id="<? echo $user['id'];?>">挑战</button></div>
         <? endforeach;?>
-      </ul>
+      </div>
     </div>
     <script src="js/bootstrap.min.js"></script>
 
