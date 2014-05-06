@@ -84,7 +84,7 @@ Card = Class.extend({
             me.div.find('img').css({
                 '-webkit-filter': 'grayscale(100%)'
             });
-            this.player.autoAttack();
+            //this.player.autoAttack();
         });
     },
 
@@ -102,11 +102,7 @@ Card = Class.extend({
             if (me.player === player2) {
                 aim = player1.face;
             } else {
-                if (me.getAttackableCells().length > 0) {
-                    aim = me.getAttackableCells()[0].card;
-                } else {
-                    aim = player2.face;
-                }
+                aim = player2.face;
             }
         }
 

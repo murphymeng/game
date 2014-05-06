@@ -47,6 +47,11 @@ $app->get('/fight', function() use ($app) {
                                      'firstPlayId'=>$toUid));
 });
 
+$app->get('/set', function() use ($app) {
+    $cards = R::getAll("select * from cards");
+    $app->render('set.html', array('cards'=>$cards));
+});
+
 $app->get('/login', function() use ($app) {
     $app->render('login.html');
 });

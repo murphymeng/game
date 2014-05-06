@@ -1,0 +1,24 @@
+
+.card {
+    float: left;
+    width: 220px;
+    height: 290px;
+    margin-right: 10px;
+    margin-top: 5px;
+    margin-bottom: 38px;
+}
+
+.card_select {
+    background-color: #E0E0E0;
+}
+
+.card .info {
+    float: left;
+    height: 39px;
+    margin-left: 10px;
+}
+
+.pic {
+    max-width: 220px;
+    max-height: 230px;
+}

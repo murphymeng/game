@@ -1,0 +1,50 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="../../assets/ico/favicon.ico">
+
+    <title>登录</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/cardset.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+    <div class="container">
+
+      <? foreach($cards as $card): ?>
+          <div class='card'>
+              <div style="float:left">
+                <img class='like' id='<? echo $card['id'];?>' src="res/unlike.png" />
+              </div>
+              <div class='info'>
+                  HP: <? echo $card['HP']; ?>
+                  攻：<? echo $card['AT']; ?>
+                  移动力：<? echo $card['MD']; ?>
+                  攻击距离：<? echo $card['AD']; ?>
+              </div>
+              <div style="clear:both"></div>
+              <div class='photo'>
+                 <img class="pic" src="res/<? echo $card['img'];?>" />
+              </div>
+          </div><!-- /.girl -->
+          <?php endforeach;?>
+
+    </div> <!-- /container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+  </body>
+</html>
