@@ -76,6 +76,7 @@ io.sockets.on('connection', function (socket) {
   });
 
   socket.on('shangzhen', function(data) {
+    //socket.broadcast.emit('shangzhen', data);
     io.sockets.in(socket.room).emit('shangzhen', data);
   });
 

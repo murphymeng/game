@@ -8,6 +8,13 @@ session_start();
 R::setup('mysql:host=localhost;dbname=game','root','');
 R::freeze(true);
 
+function hasLogin() {
+    if (isset($_SESSION['uid']) && $_SESSION['uid']) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
 $app = new \Slim\Slim(array(
     'debug' => true
@@ -21,11 +28,11 @@ $app->get('/', function() use ($app) {
 $app->get('/home', function () use ($app) {
 
     $app->contentType('text/html; charset=utf-8');
-    if (isset($_SESSION['uid']) && $_SESSION['uid']) {
+
+    if (hasLogin()) {
         $user = R::getRow("select * from users where id={$_SESSION['uid']}");
         $users = R::getAll("select * from users where id != {$_SESSION['uid']}");
         $app->render('home.html', array('users'=>$users, 'user'=>$user));
-        
     } else {
         $app->redirect('./login');
     }
@@ -48,8 +55,42 @@ $app->get('/fight', function() use ($app) {
 });
 
 $app->get('/set', function() use ($app) {
-    $cards = R::getAll("select * from cards");
-    $app->render('set.html', array('cards'=>$cards));
+
+    if (hasLogin()) {
+        $sql = "select * from cards";
+        $cards = R::getAll($sql);
+        foreach($cards as $k=>$card) {
+
+            $sql = "select * from user_card
+                            where user_card.cid={$card['id']}
+                              and user_card.uid={$_SESSION['uid']}";
+
+            $row = R::getRow($sql);
+
+            if($row) {
+                $cards[$k]['likepic'] = 'like.png';
+            } else {
+                $cards[$k]['likepic'] = 'unlike.png';
+            }
+        }
+        $app->render('set.html', array('cards'=>$cards, 'uid'=>$_SESSION['uid']));
+    } else {
+        $app->redirect('./login');
+    }
+});
+
+$app->post('/like', function() use ($app) {
+    $uid = $app->request()->params('uid');
+    $cid = $app->request()->params('cid');
+    $row = R::getRow("select * from user_card where uid={$uid} and cid={$cid}");
+    if ($row) {
+        R::exec("delete from user_card where uid={$uid} and cid={$cid}");
+    } else {
+        R::exec("insert into user_card
+                         set cid={$cid},
+                             uid={$uid}");
+    }
+    echo $cid;
 });
 
 $app->get('/login', function() use ($app) {

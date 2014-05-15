@@ -5,11 +5,11 @@ var cw = 80,
     cards2Config = [],
     face1 = new Face({
         'id': 'face1',
-        'HP': 30
+        'HP': 80
     }),
     face2 =new Face({
         'id': 'face2',
-        'HP': 30
+        'HP': 80
     }),
     player1 = new Player({
         'id': 'player1',
@@ -76,7 +76,7 @@ function getPlayer(uid) {
 }
 
 myself = getPlayer(uid);
-
+var socket = io.connect('http://192.168.61.97:8888');
 socket.on('shangzhen', function (data) {
     var card = getCard(data.cardId);
     card.shangzhen(data.x);
@@ -177,7 +177,7 @@ Event = Class.extend({
 
 globalEvent = new Event();
 
-var socket = io.connect('http://localhost:8888');
+
 socket.on('say', function (data) {
     console.log(data);
 });

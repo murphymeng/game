@@ -8,7 +8,8 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="shortcut icon" href="../../assets/ico/favicon.ico">
-
+    <script src="js/jquery.min.js" type="text/javascript"></script>
+    <script src="js/cardset.js" type="text/javascript"></script>
     <title>登录</title>
 
     <!-- Bootstrap core CSS -->
@@ -19,24 +20,25 @@
   </head>
 
   <body>
-
-    <div class="container">
+    <script type="text/javascript">
+    var uid = <? echo $uid;?>
+    </script>
+    <div class="container" style="width:1000px">
 
       <? foreach($cards as $card): ?>
           <div class='card'>
-              <div style="float:left">
-                <img class='like' id='<? echo $card['id'];?>' src="res/unlike.png" />
-              </div>
-              <div class='info'>
-                  HP: <? echo $card['HP']; ?>
-                  攻：<? echo $card['AT']; ?>
-                  移动力：<? echo $card['MD']; ?>
-                  攻击距离：<? echo $card['AD']; ?>
-              </div>
-              <div style="clear:both"></div>
-              <div class='photo'>
+              <div class='pic'>
                  <img class="pic" src="res/<? echo $card['img'];?>" />
               </div>
+              <div class='info'>
+                  <span style="float:left;width:70px">HP: <? echo $card['HP']; ?></span>攻击力：<? echo $card['AT']; ?><br />
+                  <span style="float:left;width:70px">移动力：<? echo $card['MD']; ?></span>攻击距离：<? echo $card['AD']; ?><br />
+              </div>
+              <div style="float:left;margin-left:10px">
+                <img class='like' id='<? echo $card['id'];?>' src="res/<? echo $card['likepic'];?>" />
+              </div>
+              <div style="clear:both"></div>
+              
           </div><!-- /.girl -->
           <?php endforeach;?>
 

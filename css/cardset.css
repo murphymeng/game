@@ -1,9 +1,8 @@
 
 .card {
     float: left;
-    width: 220px;
+    width: 240px;
     height: 290px;
-    margin-right: 10px;
     margin-top: 5px;
     margin-bottom: 38px;
 }
@@ -19,6 +18,7 @@
 }
 
 .pic {
-    max-width: 220px;
-    max-height: 230px;
+    float: left;
+    max-width: 80px;
+    max-height: 80px;
 }
